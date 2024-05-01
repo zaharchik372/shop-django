@@ -3,6 +3,7 @@
 {% block title %}Welcome{% endblock %}
 
 {% block content %}
-    <h1>Приветствую {{ new_user.first_name }}!</h1>
-    <p>Теперь Вы можете войти на сайт: <a href="{% url "login" %}">Войти</a>.</p>
+    <h1>Регистрация прошла успешно!</h1>
+    <h1>Ваше имя пользователя: {{ new_user.first_name }}!</h1>
+    <p>Теперь Вы можете войти на сайт: <a href="{% url "login_main" %}">Войти</a>.</p>
 {% endblock %}

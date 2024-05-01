@@ -37,11 +37,15 @@
                 {% endfor %}
 
             </ul>
-            <form class="card p-2" action="{% url 'cart:order' %}" method="post">
+            {% if user.is_authenticated %}
+                <form class="card p-2" action="{% url 'cart:order' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">Заказать</button>
+                </form>
+            {% else %}
                 {% csrf_token %}
-                <button type="submit" class="btn btn-secondary">Заказать</button>
-            </form>
-
+                <p>Пока нельзя заказать</p>
+            {% endif %}
         </div>
     </div>
 {% endif %}

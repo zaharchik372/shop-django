@@ -59,6 +59,7 @@ class Product(models.Model):
         upload_to='catalog/',
         verbose_name='Изображение',
     )
+    price = models.IntegerField(verbose_name='Цена товара')
     slug = models.SlugField(unique=True)
 
     class Meta:
