@@ -1,50 +1,105 @@
 {% load static %}
 {% load catalog_extras %}
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <a class="navbar-brand" href="{% url 'home' %}">ООО ЛогисТикааааа</a>
-  <img src="{% static 'logo.svg' %}" alt="" width="42" height="42">
-  <button class="navbar-toggler" type="button" data-toggle="collapse"
-          data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
-          aria-expanded="false" aria-label="Toggle navigation">
+<style>
+  .navbar {
+    background-color: #f8f9fa; /* Светлый фон */
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Слегка заметная тень для добавления глубины */
+  }
 
+  .navbar-brand, .navbar-nav .nav-link {
+    color: #333; /* Более темный серый цвет ссылок для лучшей видимости */
+    margin-right: 1rem; /* Расстояние между элементами меню */
+  }
+
+  .nav-item.active .nav-link {
+    color: #0056b3; /* Синий цвет для активного элемента меню */
+  }
+
+  .navbar-toggler {
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  .btn-outline-primary {
+    color: #fff;
+    border-color: #6a11cb;
+    background-image: linear-gradient(45deg, #6a11cb, #2575fc, #6a11cb);
+    background-size: 300% 300%;
+    transition: color .3s, border-color .3s;
+    animation: GradientWave 3s ease infinite;
+  }
+
+  @keyframes GradientWave {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .navbar-text {
+    margin-right: 1rem;
+    color: #2c3e50; /* Темно-синий цвет текста для улучшенной видимости */
+    background-color: #e3f2fd; /* Светло-голубой фон для выделения */
+    padding: 5px 10px;
+    border-radius: 10px; /* Скругление углов */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Небольшая тень для эффекта глубины */
+    font-weight: bold;
+    transition: background-color .3s, color .3s; /* Плавные переходы */
+  }
+
+  .navbar-text:hover {
+    background-color: #7a56b7; /* Фиолетовый цвет при наведении */
+    color: #ffffff; /* Белый цвет текста при наведении */
+    cursor: pointer; /* Изменение курсора на указатель */
+  }
+
+  .btn {
+    margin-left: 0.5rem; /* Дополнительное пространство между кнопками */
+  }
+    .card-hover {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Указываем плавный переход для основного состояния */
+  }
+
+  .card-img-top {
+    transition: transform 0.4s ease; /* Плавный переход для изображений в карточке */
+  }
+
+</style>
+
+<nav class="navbar navbar-expand-md navbar-light fixed-top bg-light shadow-sm">
+  <a class="navbar-brand" href="{% url 'home' %}">
+    <img src="{% static 'logo.svg' %}" alt="ЛогисТик" width="42" height="42">
+    ООО ЛогисТик
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'home' %}">
-          Главная
-        </a>
+        <a class="nav-link" href="{% url 'home' %}">Главная</a>
       </li>
-        {% include 'catalog/catalog_menu.html' %}
+      {% include 'catalog/catalog_menu.html' %}
     </ul>
 
-
-
     {% if user.is_authenticated %}
-        <div class="text-success">Пользователь
-        <h6>{{ user.get_username }}    </h6></div>
+    <div class="navbar-text">
+      Пользователь: <strong>{{ user.get_username }}</strong>
+    </div>
     {% endif %}
 
-    <a class="btn btn-outline-success my-2 my-sm-0" role="button" href="{% url 'cart:cart' %}">Корзина</a>
-
+    <a class="btn btn-outline-primary my-2 my-sm-0" role="button" href="{% url 'cart:cart' %}">Корзина</a>
     {% if user.is_authenticated %}
-        <a class="btn btn-outline-success my-2 my-sm-0" role="button" href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
+      <a class="btn btn-outline-primary my-2 my-sm-0" role="button" href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
     {% else %}
-        <a class="btn btn-outline-success my-2 my-sm-0" role="button" href="{% url 'login_main'%}?next={{request.path}}">Войти</a>
+      <a class="btn btn-outline-primary my-2 my-sm-0" role="button" href="{% url 'login_main'%}?next={{request.path}}">Войти</a>
     {% endif %}
-
-  <script>
-      let docTitle = document.title;
-        window.addEventListener("blur", () => {
-        document.title = "До скорой встречи!";
-      })
-      window.addEventListener("focus", () =>{
-          document.title = docTitle;
-      })
-  </script>
-
   </div>
 </nav>
+
+<script>
+    let docTitle = document.title;
+    window.addEventListener("blur", () => { document.title = "До скорой встречи!"; })
+    window.addEventListener("focus", () => { document.title = docTitle; })
+</script>

@@ -1,22 +1,46 @@
 {% load mptt_tags %}
 
+<style>
+.dropdown-menu {
+    background-color: #ffffff; /* Белый фон для выпадающего меню */
+    border: none; /* Убрать стандартные границы */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Добавить тень для глубины */
+}
+
+.dropdown-item, .nav-link {
+    color: #333; /* Темный серый для улучшенной видимости */
+    transition: background-color .3s, color .3s, transform .3s; /* Плавные переходы для фона, цвета и трансформации */
+}
+
+.nav-link {
+    font-weight: 500; /* Сделать шрифт полужирным для улучшения читаемости */
+}
+
+.dropdown-item:hover, .dropdown-item:focus, .nav-link:hover, .nav-link:focus {
+    background-color: #2575fc; /* Светло-розовый фон при наведении */
+    color: #ffffff; /* Более темный розовый для текста при наведении */
+    transform: scale(1.05); /* Небольшое увеличение размера для подчеркивания эффекта наведения */
+}
+</style>
+
 {% for genre,structure in catalog|tree_info:"ancestors" %}
-    {% if not structure.ancestors and not structure.closed_levels %}<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="{{ genre.get_absolute_url }}" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    {% elif not structure.ancestors and structure.closed_levels %}<li class="nav-item"><a class="nav-link" href="{{ genre.get_absolute_url }}">
-    {% elif structure.new_level and structure.ancestors %}<div class="dropdown-menu" aria-labelledby="dropdown01"><a class="dropdown-item" href="{{ genre.get_absolute_url }}">
-    {% elif structure.ancestors%}<a class="dropdown-item" href="{{ genre.get_absolute_url }}">
+    {% if not structure.ancestors and not structure.closed_levels %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="{{ genre.get_absolute_url }}" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ genre.name }}</a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+    {% elif not structure.ancestors and structure.closed_levels %}
+        <a class="nav-link" href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+    {% elif structure.new_level and structure.ancestors %}
+        <a class="dropdown-item" href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+    {% elif structure.ancestors %}
+        <a class="dropdown-item" href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
     {% endif %}
-        {{ genre.name }}</a>
     {% for level in structure.closed_levels %}
-        {% if structure.ancestors%}</div>
-        {% else %}</li>
+        {% if structure.ancestors %}
+            </div>
+        {% else %}
+            </li>
         {% endif %}
     {% endfor %}
 {% endfor %}
-
-
-
-
-
-
-
