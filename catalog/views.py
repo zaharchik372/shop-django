@@ -6,7 +6,7 @@ from catalog.models import Product, Category
 
 
 class ProductListView(ListView):
-    paginate_by = 9
+    paginate_by = 12
     context_object_name = 'products_list'
 
     def get_queryset(self):

@@ -14,6 +14,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+SESSION_COOKIE_HTTPONLY = False
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
     'cart.apps.CartConfig',
     'mptt',  # Древовидное меню
     'debug_toolbar',  # Дебаг тулбар
+    'django.contrib.humanize',
 ]
 
 INTERNAL_IPS = [
@@ -41,7 +43,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',  # Дебаг тулбар
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',  # Дебаг тулбар
     'whitenoise.middleware.WhiteNoiseMiddleware',   # Статичесикие файлы
 ]
 

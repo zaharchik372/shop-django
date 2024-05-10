@@ -1,36 +1,123 @@
 {% extends 'account/base.html' %}
+{% load static %}
 
-
-{% block title %}Create an account{% endblock %}
-
+{% block title %}Регистрация{% endblock %}
 
 {% block form %}
-    <div>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+    }
+
+    .form-signin {
+        width: 320px;
+        padding: 20px;
+        margin: 20px auto;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+
+    .form-control {
+        margin-bottom: 10px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        background-size: 200% 100%;
+        background-image: linear-gradient(to right, #7b2ff7, #a777e3, #7b2ff7, #a777e3);
+        border: none;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        transition: all 0.5s;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 100%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary:hover {
+        background-position: 100% 0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    .error-image {
+        width: 220px; /* Уменьшаем изображение */
+        display: block;
+        margin: 20px auto 20px;
+    }
+.btn-primary {
+  color: #fff;
+  border-color: #6a11cb;
+  background-image: linear-gradient(45deg, #6a11cb, #2575fc, #6a11cb);
+  background-size: 300% 300%;
+  transition: color .3s, border-color .3s;
+  animation: GradientWave 3s ease infinite;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes GradientWave {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1.2) saturate(1.5);
+  }
+}
+
+</style>
+
+<div>
 {% if user.is_anonymous %}
-
-
-<form class="form-signin" method="post" action="{% url 'register' %}">
-
-  <input type="hidden" name="next" value="">
-  <img class="mb-4" src="/static/logo.svg" alt="" width="72" height="72">
-
-    {% csrf_token %}
-
-    <h1 class="h3 mb-3 font-weight-normal">Создать аккаунт</h1>
-    <label for="inputEmail" class="sr-only">Email</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email" name="email"
-         value="" required="" autofocus="" data-cip-id="inputEmail">
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Пароль"
-         name="password" required="" data-cip-id="inputPassword">
-    <input type="password" id="inputPassword" class="form-control" placeholder="Повторите пароль"
-         name="password2" required="" data-cip-id="inputPassword">
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Создать</button>
-</form>
-    {% else %}
-    <p class="text-success">{{ user|upper}}, Вы уже зарегистрированы. <br> <a href="{{ '/' }}">Перейти на главную</a></p>
+    {% if user_form.errors %}
+    <div class="alert alert-danger">
+        <strong>Ошибка!</strong> Пожалуйста, исправьте указанные ошибки.
+        {% for field in user_form %}
+            {% for error in field.errors %}
+                <p>{{ error|escape }}</p>
+            {% endfor %}
+        {% endfor %}
+        <img src="{% static 'Испуг_регистрации.webp' %}" alt="Ошибка регистрации" class="error-image">
+    </div>
     {% endif %}
-    <p class="mt-5 mb-3 text-muted">© Просто магазин 2020</p>
+
+    <form class="form-signin" method="post" action="{% url 'register' %}">
+        <input type="hidden" name="next" value="">
+        <img src="{% static 'logo_main.svg' %}" alt="ЛогисТик" width="100" height="100">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 font-weight-normal">Создать аккаунт</h1>
+        <label for="inputEmail" class="sr-only">Email</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email" name="email" value="" required="" autofocus="" data-cip-id="inputEmail">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Пароль" name="password" required="" data-cip-id="inputPassword">
+        <label for="inputPassword2" class="sr-only">Повторите пароль</label>
+        <input type="password" id="inputPassword2" class="form-control" placeholder="Повторите пароль" name="password2" required="" data-cip-id="inputPassword2">
+        <input type="text" id="inputPhone" class="form-control" placeholder="Телефон" name="phone">
+        <input type="text" id="inputFirstName" class="form-control" placeholder="Имя" name="first_name" required="">
+        <input type="text" id="inputLastName" class="form-control" placeholder="Фамилия" name="last_name" required="">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Создать</button>
+    </form>
+{% else %}
+    <p class="text-success">{{ user|upper }}, Вы уже зарегистрированы. <br> <a href="{{ '/' }}">Перейти на главную</a></p>
+{% endif %}
+    <p class="mt-5 mb-3 text-muted">{% include 'footer.html' %}</p>
 </div>
 {% endblock %}

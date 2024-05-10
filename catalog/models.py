@@ -52,7 +52,12 @@ class Product(models.Model):
         max_length=255,
         verbose_name='Наименование',
     )
-
+    subtitle = models.CharField(
+        max_length=255,
+        verbose_name='Подзаголовок',
+        blank=True,  # Сделаем поле необязательным
+        null=True   # Разрешим хранить в базе данных значения NULL
+    )
     description = models.TextField(verbose_name='Описание')
 
     image = models.ImageField(

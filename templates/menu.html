@@ -10,7 +10,11 @@
 
   .navbar-brand, .navbar-nav .nav-link {
     color: #333; /* Более темный серый цвет ссылок для лучшей видимости */
-    margin-right: 1rem; /* Расстояние между элементами меню */
+    margin-right: 1.1rem; /* Расстояние между элементами меню */
+
+      position: relative; /* Добавляем позиционирование */
+      left: 20px; /* Сдвигаем текст вправо */
+
   }
 
   .nav-item.active .nav-link {
@@ -68,7 +72,7 @@
 
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light shadow-sm">
   <a class="navbar-brand" href="{% url 'home' %}">
-    <img src="{% static 'logo.svg' %}" alt="ЛогисТик" width="42" height="42">
+    <img src="{% static 'logo_main.svg' %}" alt="ЛогисТик" width="50" height="50">
     ООО ЛогисТик
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
