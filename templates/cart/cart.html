@@ -2,58 +2,117 @@
 
 {% block title %}Корзина{% endblock %}
 
-
 {% block content %}
-    {% include 'menu.html' %}
-    <div class="container mt-3">
+<style>
+ .container {
+        max-width: 960px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
 
+    .btn-secondary {
+        background-color: #6a11cb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        transition: background-color 0.4s, transform 0.6s;
+    }
 
+    .btn-secondary:hover {
+        background-color: #2575fc;
+        transform: translateY(-2px);
+    }
 
+    .badge-secondary {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #6a11cb;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 50%;
+    }
 
+    .list-group-item {
+        position: relative;
+        border: 1px solid #e0e0e0;
+        background-color: #ffffff;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .quantity-badge {
+        position: absolute;
+        top: 75px;
+        right: 5px;
+        background-color: #6a11cb;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 50%;
+    }
+
+    .item-text {
+        color: #383838;
+    }
+
+    .price {
+
+        font-weight: bold;
+        color: #000000;
+    }
+
+    .quantity-badge {
+        font-size: 0.9rem;
+        color: #ffffff;
+    }
+</style>
+
+{% include 'menu.html' %}
+<div class="container mt-3">
     {% if not cart %}
-
-    <div class="col-lg-6 col-md-9 col-sm-12 order-md-2 mb-4 mx-auto">
-        <h4 class="text-muted">В корзине пока что нет товаров</h4>
-    </div>
-
-{% else %}
-
-    <div class="row">
-        <div class="col-lg-6 col-md-9 col-sm-12 order-md-2 mb-4 mx-auto">
-            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted">Ваша корзина</span>
-                <span class="badge badge-secondary badge-pill">{{ cart|length }}</span>
-            </h4>
-            <ul class="list-group mb-3">
-
-                {% for value in cart.values %}
-                    <li class="list-group-item d-flex justify-content-between lh-condensed">
-                        <div>
-                            <h6 class="my-0">{{ value.product.title}}</h6>
-                            <small class="text-muted">{{ value.product.description }}</small>
-                        </div>
-                        <span class="text-muted">{{ value.quantity }}</span>
-                    </li>
-                {% endfor %}
-
-            </ul>
-            {% if user.is_authenticated %}
-                <form class="card p-2" action="{% url 'cart:order' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary">Заказать</button>
-                </form>
-            {% else %}
-                {% csrf_token %}
-                <p>Пока нельзя заказать</p>
-            {% endif %}
+        <div class="col-lg-6 col-md-9 col-sm-12 order-md-2 mb-4 mx-auto text-center">
+            <h4 class="text-muted">В корзине пока что нет товаров</h4>
         </div>
-    </div>
-{% endif %}
-    {% if messages %}
-    {% for message in messages %}
-    <p class="text-success text-center">{{ message }}</p>
-    {% endfor %}
-{% endif %}
+    {% else %}
+        <div class="row">
+            <div class="col-lg-6 col-md-9 col-sm-12 order-md-2 mb-4 mx-auto">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Ваша корзина</span>
+                    <span class="badge badge-secondary badge-pill">{{ cart|length }}</span>
+                </h4>
+                <ul class="list-group mb-3">
+                   {% for value in cart.values %}
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">{{ value.product.title }}</h6>
+                                <p class="item-text">{{ value.product.subtitle }}</p>
+                                <span class="price">Итого: {{ value.total_price }} руб.</span> <!-- Цена за единицу -->
+                            </div>
+                            <div class="quantity-badge">{{ value.quantity }}</div>
+                            <span class="price">{{ value.product.price }} руб.</span> <!-- Итоговая цена -->
+                        </li>
+                    {% endfor %}
 
-    </div>
+                </ul>
+                {% if user.is_authenticated %}
+                    <form class="card p-2" action="{% url 'cart:order' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">Заказать</button>
+                    </form>
+                {% else %}
+                    <p class="text-muted">Пожалуйста, авторизуйтесь для оформления заказа.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="text-success text-center">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+</div>
 {% endblock %}

@@ -41,17 +41,19 @@ def view_cart(request):
 
     if cart:
         products = {}
-        product_list = Product.objects.filter(pk__in=cart.keys()).values('id', 'title', 'description')
+        product_list = Product.objects.filter(pk__in=cart.keys()).values('id', 'title', 'subtitle', 'price')
 
         for product in product_list:
             products[str(product['id'])] = product
 
         for key in cart.keys():
             cart[key]['product'] = products[key]
+            cart[key]['total_price'] = products[key]['price'] * cart[key]['quantity']  # Добавлен расчет общей цены
 
         context['cart'] = cart
 
     return render(request, 'cart/cart.html', context)
+
 
 
 @login_required(login_url='login')
