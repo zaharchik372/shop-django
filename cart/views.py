@@ -48,12 +48,11 @@ def view_cart(request):
 
         for key in cart.keys():
             cart[key]['product'] = products[key]
-            cart[key]['total_price'] = products[key]['price'] * cart[key]['quantity']  # Добавлен расчет общей цены
+            cart[key]['total_price'] = products[key]['price'] * cart[key]['quantity']
 
         context['cart'] = cart
 
     return render(request, 'cart/cart.html', context)
-
 
 
 @login_required(login_url='login')
@@ -66,11 +65,11 @@ def view_order(request):
 
         if len(cart) > 0:
             order = Order.objects.create(customer=customer)
-
             for key, value in cart.items():
                 product = Product.objects.get(pk=key)
                 quantity = value['quantity']
-                ProductsInOrder.objects.create(order=order, product=product, quantity=quantity)
+                total_price = product.price * quantity
+                ProductsInOrder.objects.create(order=order, product=product, quantity=quantity, total_price=total_price)
 
             request.session['cart'] = {}
             request.session.modified = True

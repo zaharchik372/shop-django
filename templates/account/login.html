@@ -81,7 +81,7 @@
 {#        <p>Вы еще не зарег...</p>#}
         <a role="button" href="{% url 'register'%}?next={{request.path}}">Вы еще не зарегистрированы?</a>
     {% else %}
-        <p class="text-success">{{ user|upper }}, Вы уже зарегистрированы. <br> <a href="/static">На главную.</a></p>
+        <p class="text-success">{{ user|upper }}, Вы уже зарегистрированы. <br> <a href="/">На главную.</a></p>
     {% endif %}
         <p class="mt-5 mb-3 text-muted">{% include 'footer.html' %}</p>
     </div>

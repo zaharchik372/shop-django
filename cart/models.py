@@ -22,4 +22,4 @@ class ProductsInOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Заказ')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='Товар', related_name='count_in_order',)
     quantity = models.PositiveSmallIntegerField(verbose_name='Количество товара в заказе')
-    total_price = models.IntegerField(verbose_name='Итоговая цена в заказе') # Создание Итоговой цены
+    total_price = models.PositiveSmallIntegerField(verbose_name='Итоговая цена в заказе') # Добавление нового поля

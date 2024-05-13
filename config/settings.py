@@ -11,10 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 
 SESSION_COOKIE_HTTPONLY = False
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
