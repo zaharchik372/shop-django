@@ -9,7 +9,6 @@ class Article(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     products = models.ManyToManyField(Product, verbose_name='Товары', blank=True)
 
-    # price = models.IntegerField(Product, blank=True)
 
     class Meta:
         verbose_name = 'Статья'

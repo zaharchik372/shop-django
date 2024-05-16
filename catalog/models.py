@@ -40,14 +40,12 @@ class Category(MPTTModel):
 
 
 class Product(models.Model):
-
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
         related_name='products',
         verbose_name='Категория',
     )
-
     title = models.CharField(
         max_length=255,
         verbose_name='Наименование',
@@ -59,14 +57,12 @@ class Product(models.Model):
         null=True   # Разрешим хранить в базе данных значения NULL
     )
     description = models.TextField(verbose_name='Описание')
-
     image = models.ImageField(
         upload_to='catalog/',
         verbose_name='Изображение',
     )
     price = models.IntegerField(verbose_name='Цена товара')
     slug = models.SlugField(unique=True)
-
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'

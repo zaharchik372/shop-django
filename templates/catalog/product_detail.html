@@ -96,7 +96,7 @@
         <div class="col-md-6 product-details">
             <h2>{{ product.title }}</h2>
             <p>{{ product.description }}</p>
-            <p class="price-tag">  {{ product.price|intcomma }} руб</p>
+            <p class="price-tag">  {{ product.price|intcomma }} руб./куб</p>
             <form action="{% url 'cart:add_to_cart' %}?product_id={{ product.id }}&next={{ request.path }}" method="post">
                 {% csrf_token %}
                 <input type="submit" class="btn btn-custom" value="Добавить в корзину »">

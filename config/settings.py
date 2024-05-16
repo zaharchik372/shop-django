@@ -44,7 +44,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',  # Дебаг тулбар
-    'whitenoise.middleware.WhiteNoiseMiddleware',   # Статичесикие файлы
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Статичесикие файлы
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -114,12 +114,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+LOGIN_REDIRECT_URL = '/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # CACHES = {
 #     'default': {
 #         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
 #     }
 # }
-
-LOGIN_REDIRECT_URL = '/'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
