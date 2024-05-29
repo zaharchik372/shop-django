@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Редактирование услуги{% endblock %}
+{% block content %}
+
+<style>
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+
+    .btn-custom {
+        background-color: #6a11cb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        transition: background-color 0.4s, transform 0.6s;
+        margin-top: 1rem;
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-custom:hover {
+        background-color: #2575fc;
+        color: black;
+        transform: translateY(-2px);
+    }
+
+    .order-info, .date-info {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container">
+    <h1 class="my-4">Редактирование услуги</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+            <label for="execution_date">Дата выполнения:</label>
+            <input type="date" id="execution_date" name="execution_date" value="{{ service_execution.execution_date|date:"Y-m-d" }}" class="form-control">
+        </div>
+        <div class="form-group">
+            {{ form.note.label_tag }}
+            {{ form.note }}
+        </div>
+        <div class="form-group">
+            {{ form.employee.label_tag }}
+            {{ form.employee }}
+        </div>
+        <div class="order-info">
+            <strong>Заказ:</strong> {{ service_execution.order.customer.email }} - {{ service_execution.order.created|date:"d.m.Y" }}
+        </div>
+        <button type="submit" class="btn btn-custom">Сохранить</button>
+    </form>
+    <a href="{% url 'order_detail' service_execution.order.id %}" class="btn btn-custom mt-3">Перейти к заказу</a>
+</div>
+
+{% endblock %}

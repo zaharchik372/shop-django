@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
+{% block title %}Просмотр товаров{% endblock %}
 {% load humanize %}
-{% block title %}Администрирование заказов{% endblock %}
-
 {% block content %}
 
 <style>
@@ -46,36 +45,62 @@
         border-radius: 5px;
         transition: background-color 0.6s;
         display: inline-block;
-        width: 190px;
+        width: 180px;
         text-align: center;
     }
 
     .price-tag:hover {
         background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%);
     }
+
+    .btn-custom {
+        background-color: #6a11cb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        transition: background-color 0.4s, transform 0.6s;
+        margin-top: auto;
+    }
+
+    .btn-custom:hover {
+        background-color: #2575fc;
+        color: black;
+        transform: translateY(-2px);
+    }
+
+    .header-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-buttons a {
+        margin-right: 10px;
+    }
 </style>
 
 <div class="container">
-    <h1 class="my-4">Список заказов</h1>
+    <div class="header-buttons my-4">
+        <h1>Просмотр услуг</h1>
+        <a href="{% url 'create_product' %}" class="btn btn-custom">Создать услугу</a>
+    </div>
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col">Покупатель</th>
-                <th scope="col">Количество позиций</th>
-                <th scope="col">Итоговая цена заказа</th>
-                <th scope="col">Дата создания</th>
-                <th scope="col">Действия</th>
+                <th>Наименование</th>
+                <th>Категория</th>
+                <th>Цена</th>
+                <th>Действие</th>
             </tr>
         </thead>
         <tbody>
-            {% for order_data in orders_with_totals %}
+            {% for product in products %}
                 <tr>
-                    <td>{{ order_data.order.customer }}</td>
-                    <td>{{ order_data.quantity }}</td>
-                    <td><span class="price-tag">{{ order_data.total_price|intcomma }} руб./куб</span></td>
-                    <td>{{ order_data.order.created|date:"d.m.Y H:i" }}</td>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.category.name }}</td>
+                    <td><span class="price-tag">{{ product.price|intcomma }} руб./куб</span></td>
                     <td>
-                        <a href="{% url 'order_detail' order_data.order.id %}" class="btn btn-info">Просмотр</a>
+                        <a href="{% url 'admin_tovar_for_admin' product.id %}" class="btn btn-info">Редактировать</a>
                     </td>
                 </tr>
             {% endfor %}

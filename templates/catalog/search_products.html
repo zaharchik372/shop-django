@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Поиск услуг{% endblock %}
+
+{% block content %}
+<style>
+    .container { max-width: 1100px; margin: 0 auto; }
+    .search-input { width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 25px; border: 1px solid #ddd; font-size: 16px; }
+    .row { display: flex; flex-wrap: wrap; }
+    .col-lg-3, .col-md-4 { box-sizing: border-box; width: 25%; padding: 0 15px; margin-bottom: 1px; }
+    .card { display: flex; flex-direction: column; background: #fff; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.6s ease-in-out, box-shadow 0.6s ease-in-out; }
+    .card:hover { transform: scale(1.03); box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    .card-img-top { width: 100%; height: 250px; object-fit: contain; transition: transform 0.6s ease-in-out; }
+    .card-img-top:hover { transform: scale(1.06); }
+    .card-body { padding: 15px; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-title { font-size: 1.2rem; margin-bottom: 5px; }
+    .card-text { font-size: 1rem; color: #666; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+    .btn-custom { background-color: #6a11cb; color: white; border: none; padding: 10px 20px; transition: background-color 0.4s, transform 0.6s; margin-top: auto; }
+    .btn-custom:hover { background-color: #2575fc; transform: translateY(-2px); }
+    .price-tag { background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%); color: white; padding: 5px 10px; font-size: 1.25rem; font-weight: bold; border-radius: 5px; transition: background-color 0.6s; }
+    .price-tag:hover { background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%); }
+</style>
+
+<div class="container">
+    <h1 class="my-4">Поиск услуг</h1>
+    <form method="get" id="search-form">
+        <input type="text" name="q" id="search-input" class="search-input" placeholder="Введите название услуги..." value="{{ query }}">
+    </form>
+    <div class="row" id="products-container">
+        {% for product in products %}
+            <div class="col-lg-3 col-md-4 d-flex align-items-stretch">
+                <div class="card mb-4 shadow-sm card-hover" style="border-radius: 15px;">
+                    <a href="/catalog/{{ product.category_slug }}/{{ product.slug }}" class="text-decoration-none">
+                        <img src="{{ product.image }}" class="card-img-top" alt="{{ product.title }}">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.title }}</h5>
+                        <p class="card-text">{{ product.subtitle }}</p>
+                        <div class="d-flex flex-column align-items-end">
+                            <form action="{% url 'cart:add_to_cart' %}?product_id={{ product.id }}&next={{ request.path }}" method="post">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-custom" value="Добавить в корзину »">
+                            </form>
+                            <div class="price-tag mt-2">{{ product.price|intcomma }} руб./куб</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function numberWithSpaces(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    document.getElementById('search-input').addEventListener('input', function() {
+        var query = this.value.charAt(0).toUpperCase() + this.value.slice(1);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '{% url "search_service" %}?q=' + encodeURIComponent(query), true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                var productsContainer = document.getElementById('products-container');
+                productsContainer.innerHTML = '';
+                data.products.forEach(function(product) {
+                    var productHTML = `
+                        <div class="col-lg-3 col-md-4 d-flex align-items-stretch">
+                            <div class="card mb-4 shadow-sm card-hover" style="border-radius: 15px;">
+                                <a href="/catalog/${product.category_slug}/${product.slug}" class="text-decoration-none">
+                                    <img src="${product.image}" class="card-img-top" alt="${product.title}">
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.title}</h5>
+                                    <p class="card-text">${product.subtitle}</p>
+                                    <div class="d-flex flex-column align-items-end">
+                                        <form action="{% url 'cart:add_to_cart' %}?product_id=${product.id}&next={{ request.path }}" method="post">
+                                            <input type="submit" class="btn btn-custom" value="Добавить в корзину »">
+                                        </form>
+                                        <div class="price-tag mt-2">${numberWithSpaces(product.price)} руб./куб</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productsContainer.insertAdjacentHTML('beforeend', productHTML);
+                });
+            }
+        };
+        xhr.send();
+    });
+</script>
+
+{% endblock %}

@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
-
+from django.db import connection
 from catalog.forms import ReviewForm
 from catalog.models import Product, Category
+from django.shortcuts import render
 
 
 class ProductListView(ListView):
@@ -49,3 +50,5 @@ class ProductDetail(DetailView):
             context['form'] = form
 
         return self.render_to_response(context=context)
+
+

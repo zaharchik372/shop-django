@@ -3,22 +3,20 @@
 
 <style>
   .navbar {
-    background-color: #f8f9fa; /* Светлый фон */
+    background-color: #f8f9fa;
     padding: 0.5rem 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Слегка заметная тень для добавления глубины */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .navbar-brand, .navbar-nav .nav-link {
-    color: #333; /* Более темный серый цвет ссылок для лучшей видимости */
-    margin-right: 1.1rem; /* Расстояние между элементами меню */
-
-      position: relative; /* Добавляем позиционирование */
-      left: 20px; /* Сдвигаем текст вправо */
-
+    color: #333;
+    margin-right: 1.1rem;
+    position: relative;
+    left: 20px;
   }
 
   .nav-item.active .nav-link {
-    color: #0056b3; /* Синий цвет для активного элемента меню */
+    color: #0056b3;
   }
 
   .navbar-toggler {
@@ -42,32 +40,32 @@
 
   .navbar-text {
     margin-right: 1rem;
-    color: #2c3e50; /* Темно-синий цвет текста для улучшенной видимости */
-    background-color: #e3f2fd; /* Светло-голубой фон для выделения */
+    color: #2c3e50;
+    background-color: #e3f2fd;
     padding: 5px 10px;
-    border-radius: 10px; /* Скругление углов */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Небольшая тень для эффекта глубины */
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     font-weight: bold;
-    transition: background-color .3s, color .3s; /* Плавные переходы */
+    transition: background-color .3s, color .3s;
   }
 
   .navbar-text:hover {
-    background-color: #7a56b7; /* Фиолетовый цвет при наведении */
-    color: #ffffff; /* Белый цвет текста при наведении */
-    cursor: pointer; /* Изменение курсора на указатель */
+    background-color: #7a56b7;
+    color: #ffffff;
+    cursor: pointer;
   }
 
   .btn {
-    margin-left: 0.5rem; /* Дополнительное пространство между кнопками */
+    margin-left: 0.5rem;
   }
-    .card-hover {
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Указываем плавный переход для основного состояния */
+
+  .card-hover {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   }
 
   .card-img-top {
-    transition: transform 0.4s ease; /* Плавный переход для изображений в карточке */
+    transition: transform 0.4s ease;
   }
-
 </style>
 
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light shadow-sm">
@@ -82,20 +80,20 @@
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'home' %}">Главная</a>
+        <a class="nav-link" href="{% url 'search_service' %}">Поиск услуг</a>
       </li>
       {% include 'catalog/catalog_menu.html' %}
     </ul>
 
     {% if user.is_authenticated %}
-    <div class="navbar-text">
-      Пользователь: <strong>{{ user.get_username }}</strong>
-    </div>
+      <div class="navbar-text" onclick="location.href='{% if user.is_staff %}{% url 'admin_panel' %}{% else %}{% url 'user_dashboard' %}{% endif %}'">
+        Пользователь: <strong>{{ user.get_username }}</strong>
+      </div>
     {% endif %}
 
     <a class="btn btn-outline-primary my-2 my-sm-0" role="button" href="{% url 'cart:cart' %}">Корзина</a>
     {% if user.is_authenticated %}
-      <a class="btn btn-outline-primary my-2 my-sm-0" role="button" href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
+      <a class="btn btn-outline-primary my-2 my-sm-0" role="button" href="{% url 'logout'%}?next={% url 'home' %}">Выйти</a>
     {% else %}
       <a class="btn btn-outline-primary my-2 my-sm-0" role="button" href="{% url 'login_main'%}?next={{request.path}}">Войти</a>
     {% endif %}

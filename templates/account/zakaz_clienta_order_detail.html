@@ -1,0 +1,492 @@
+{% extends 'base.html' %}
+{% block title %}Подробнее о заказе #{{ order.id }}{% endblock %}
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding-top: 70px;
+    }
+
+    .order-details {
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .order-details:hover {
+        background-color: #f1f1f1;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .order-details h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #6a11cb;
+        padding-bottom: 5px;
+    }
+
+    .order-details h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .order-details p {
+        margin: 0.5rem 0;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    .order-details .item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: #fff;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .order-details .item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .order-details .item img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .order-details .item .details {
+        flex: 1;
+        margin-left: 1rem;
+    }
+
+    .order-details .item .details h5 {
+        margin: 0;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .order-details .item .details p {
+        margin: 0;
+        color: #777;
+    }
+
+    .order-details .total {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #333;
+        margin-top: 1rem;
+        text-align: right;
+    }
+
+    .badge {
+        padding: 0.5em 0.75em;
+        font-size: 1em;
+        font-weight: 700;
+        border-radius: 10px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .badge-primary {
+        background-color: #6a11cb;
+        color: white;
+    }
+
+    .badge-secondary {
+        background-color: #5a5a5a;
+        color: white;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .badge-info {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .badge-light {
+        background-color: #f8f9fa;
+        color: black;
+    }
+
+    .badge-dark {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .border-primary {
+        border: 2px solid #6a11cb;
+    }
+
+    .border-secondary {
+        border: 2px solid #5a5a5a;
+    }
+
+    .border-success {
+        border: 2px solid #28a745;
+    }
+
+    .border-danger {
+        border: 2px solid #dc3545;
+    }
+
+    .border-warning {
+        border: 2px solid #ffc107;
+    }
+
+    .border-info {
+        border: 2px solid #17a2b8;
+    }
+
+    .border-light {
+        border: 2px solid #f8f9fa;
+    }
+
+    .border-dark {
+        border: 2px solid #343a40;
+    }
+
+    .rounded-circle {
+        border-radius: 50% !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    }
+
+    .shadow {
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175) !important;
+    }
+
+    .text-primary {
+        color: #6a11cb !important;
+    }
+
+    .text-secondary {
+        color: #5a5a5a !important;
+    }
+
+    .text-success {
+        color: #28a745 !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    .text-warning {
+        color: #ffc107 !important;
+    }
+
+    .text-info {
+        color: #17a2b8 !important;
+    }
+
+    .text-light {
+        color: #f8f9fa !important;
+    }
+
+    .text-dark {
+        color: #343a40 !important;
+    }
+
+    .bg-primary {
+        background-color: #6a11cb !important;
+    }
+
+    .bg-secondary {
+        background-color: #5a5a5a !important;
+    }
+
+    .bg-success {
+        background-color: #28a745 !important;
+    }
+
+    .bg-danger {
+        background-color: #dc3545 !important;
+    }
+
+    .bg-warning {
+        background-color: #ffc107 !important;
+    }
+
+    .bg-info {
+        background-color: #17a2b8 !important;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .bg-dark {
+        background-color: #343a40 !important;
+    }
+
+    .p-2 {
+        padding: .5rem !important;
+    }
+
+    .p-3 {
+        padding: 1rem !important;
+    }
+
+    .m-2 {
+        margin: .5rem !important;
+    }
+
+    .m-3 {
+        margin: 1rem !important;
+    }
+
+    .mt-4 {
+        margin-top: 1.5rem !important;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .rounded {
+        border-radius: .25rem !important;
+    }
+
+    .rounded-lg {
+        border-radius: .3rem !important;
+    }
+
+    .rounded-pill {
+        border-radius: 50rem !important;
+    }
+
+    .opacity-75 {
+        opacity: .75 !important;
+    }
+
+    .opacity-50 {
+        opacity: .5 !important;
+    }
+
+    .opacity-25 {
+        opacity: .25 !important;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+        color: white;
+    }
+
+    .text-gradient-primary {
+        background: -webkit-linear-gradient(45deg, #6a11cb, #2575fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .box-shadow-primary {
+        box-shadow: 0 4px 6px rgba(106, 17, 203, 0.1);
+    }
+
+    .card-hover:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Animation Styles */
+    @keyframes slideInUp {
+        from {
+            transform: translateY(20%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .animate-slide-in-up {
+        animation: slideInUp 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes zoomIn {
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .animate-zoom-in {
+        animation: zoomIn 0.5s ease-in-out;
+    }
+
+    @keyframes rotateIn {
+        from {
+            transform: rotate(-180deg);
+            opacity: 0;
+        }
+        to {
+            transform: rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    .animate-rotate-in {
+        animation: rotateIn 0.5s ease-in-out;
+    }
+
+    @keyframes bounceIn {
+        from, 20%, 40%, 60%, 80%, to {
+            -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+            animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        }
+        from {
+            opacity: 0;
+            transform: translate3d(0, -3000px, 0);
+        }
+        20% {
+            transform: translate3d(0, 25px, 0);
+        }
+        40% {
+            transform: translate3d(0, -10px, 0);
+        }
+        60% {
+            transform: translate3d(0, 5px, 0);
+        }
+        80% {
+            transform: translate3d(0, -2px, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    .animate-bounce-in {
+        animation: bounceIn 1s;
+    }
+
+    @keyframes flipInX {
+        from {
+            transform: perspective(400px) rotateX(90deg);
+            animation-timing-function: ease-in;
+            opacity: 0;
+        }
+        40% {
+            transform: perspective(400px) rotateX(-10deg);
+            animation-timing-function: ease-in;
+        }
+        70% {
+            transform: perspective(400px) rotateX(10deg);
+            animation-timing-function: ease-in;
+        }
+        100% {
+            transform: perspective(400px) rotateX(0deg);
+            animation-timing-function: ease-in;
+            opacity: 1;
+        }
+    }
+
+    .animate-flip-in-x {
+        animation: flipInX 0.75s ease-in-out;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            animation-timing-function: ease-in;
+        }
+        50% {
+            transform: scale(1.05);
+            animation-timing-function: ease-out;
+        }
+        100% {
+            transform: scale(1);
+            animation-timing-function: ease-in;
+        }
+    }
+
+    .animate-pulse {
+        animation: pulse 1s infinite;
+    }
+</style>
+
+<div class="container">
+    <div class="order-details animate-fade-in">
+        <h2>Заказ #{{ order.id }}</h2>
+        <p><strong>Дата заказа:</strong> {{ order.created|date:"d.m.Y H:i" }}</p>
+
+        <h3>Товары в заказе</h3>
+        {% for item in products_in_order %}
+        <div class="item card-hover">
+            <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" class="rounded shadow-lg">
+            <div class="details">
+                <h5>{{ item.product.title }}</h5>
+                <p>{{ item.product.subtitle }}</p>
+                <p>Количество: {{ item.quantity }}</p>
+            </div>
+            <div>
+                <p>{{ item.total_price }} руб.</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <h3 class="text-gradient-primary">Выполнение услуги</h3>
+        {% if service_execution %}
+        <p><strong>Дата выполнения:</strong> {{ service_execution.execution_date|date:"d.m.Y" }}</p>
+        {% else %}
+        <p><strong>Дата выполнения:</strong> Дата выполнения отсутствует</p>
+        {% endif %}
+
+        <p class="total text-gradient-primary">Общая сумма: {{ order.all_total_price }} руб.</p>
+    </div>
+</div>
+
+{% endblock %}

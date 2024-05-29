@@ -102,6 +102,7 @@
     }
 </style>
 
+
 <main role="main" class="pt-5">
     {% for article in articles %}
         <div class="mb-5">
@@ -123,10 +124,10 @@
                                     <h5 class="card-title">{{ product.title }}</h5>
                                     <p class="card-text">{{ product.subtitle }}</p>
                                     <div class="d-flex flex-column align-items-end">
-                                        <form action="{% url 'cart:add_to_cart' %}?product_id={{ product.id }}&next={{ request.path }}" method="post">
-                                        {% csrf_token %}
-                                        <input type="submit" class="btn btn-custom" value="Добавить в корзину »">
-                                    </form>
+                                        <form id="add-to-cart-form-{{ product.id }}" action="{% url 'cart:add_to_cart' %}?product_id={{ product.id }}&next={{ request.path }}" method="post">
+                                            {% csrf_token %}
+                                            <input type="submit" class="btn btn-custom" value="Добавить в корзину »">
+                                        </form>
                                         <div class="price-tag mt-2">{{ product.price|intcomma }} руб./куб</div>
                                     </div>
                                 </div>
@@ -138,5 +139,27 @@
         </div>
     {% endfor %}
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('form[id^="add-to-cart-form-"]');
+
+    forms.forEach(form => {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = form.action;
+            const formData = new FormData(form);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData
+            })
+        });
+    });
+});
+</script>
 
 {% endblock %}

@@ -60,7 +60,6 @@
     }
 
     .price {
-
         font-weight: bold;
         color: #000000;
     }
@@ -96,7 +95,10 @@
                             <span class="price">{{ value.product.price }} руб.</span> <!-- Итоговая цена -->
                         </li>
                     {% endfor %}
-
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span><strong>Всего:</strong></span>
+                        <strong>{{ all_total_price }} руб.</strong> <!-- Общая сумма -->
+                    </li>
                 </ul>
                 {% if user.is_authenticated %}
                     <form class="card p-2" action="{% url 'cart:order' %}" method="post">

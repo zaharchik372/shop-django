@@ -3,7 +3,7 @@ from django.db.models import Sum
 from .models import Order, ProductsInOrder
 
 from django.contrib import admin
-from .models import Order, ProductsInOrder, Product
+from .models import Order, ProductsInOrder, ServiceExecution
 
 
 class ProductsInOrderInline(admin.TabularInline):
@@ -38,3 +38,13 @@ class OrderAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return True
+
+
+@admin.register(ServiceExecution)
+class ServiceExecutionAdmin(admin.ModelAdmin):
+    list_display = ('order', 'order_customer', 'execution_date', 'employee')
+    search_fields = ('order__id', 'order__customer__name', 'employee')
+
+    def order_customer(self, obj):
+        return obj.order.customer
+    order_customer.short_description = 'Клиент'

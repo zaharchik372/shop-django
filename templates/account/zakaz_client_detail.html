@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Детали заказа{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: collapse;
+    }
+
+    .table th, .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+
+    .table-hover tbody tr:hover {
+        color: #495057;
+        background-color: rgba(0, 0, 0, 0.075);
+    }
+
+    .price-tag {
+        background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 5px 10px;
+        font-size: 1.25rem;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: background-color 0.6s;
+        display: inline-block;
+        width: 150px;
+        text-align: center;
+    }
+
+    .price-tag:hover {
+        background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%);
+    }
+</style>
+
+<div class="container">
+    <h1 class="my-4">Детали заказа</h1>
+    <p>Покупатель: {{ order.customer }}</p>
+    <p>Имя: {{ customer.first_name }}</p>
+    <p>Фамилия: {{ customer.last_name }}</p>
+    <p>Номер телефона: {{ customer.phone }}</p>
+    <p>Количество позиций: {{ products_in_order.count }}</p>
+    <p>Итоговая цена заказа: <b><span class="price">{{ total_price|intcomma }} руб./куб</span></b></p>
+    <p>Дата и время создания: {{ order.created|date:"d.m.Y H:i" }}</p>
+
+    <h2 class="my-4">Товары в заказе</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена за штуку</th>
+                    <th>Итоговая цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in formset %}
+                    <tr>
+                        <td>{{ form.product }}</td>
+                        <td>{{ form.quantity }}</td>
+                        <td>{% if form.instance.product %}{{ form.instance.product.price }}{% else %}0{% endif %}</td>
+                        <td>{% if form.instance.product %}{% widthratio form.instance.product.price 1 form.instance.quantity %}{% else %}0{% endif %}</td>
+                        {{ form.id }}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    </form>
+
+</div>
+
+{% endblock %}

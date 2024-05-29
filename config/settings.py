@@ -26,8 +26,8 @@ INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'account.apps.AccountConfig',
     'cart.apps.CartConfig',
-    'mptt',  # Древовидное меню
-    'debug_toolbar',  # Дебаг тулбар
+    'mptt',
+    # 'debug_toolbar',
     'django.contrib.humanize',
 ]
 
@@ -39,7 +39,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -94,7 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'account.User'
 
-LANGUAGE_CODE = 'ru-Ru'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -103,7 +103,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
+DEFAULT_CHARSET = 'utf-8'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
@@ -113,6 +113,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
 LOGIN_REDIRECT_URL = '/'
 

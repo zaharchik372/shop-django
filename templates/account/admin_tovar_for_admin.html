@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Редактирование товара{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container">
+    <h1 class="my-4">Редактирование товара: {{ product.title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Административная панель{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .admin-links {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .admin-link-card {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: transform 0.6s ease-in-out, box-shadow 0.6s ease-in-out;
+        padding: 20px;
+    }
+
+    .admin-link-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .admin-link-card h5 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .admin-link-card p {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .btn-custom {
+        background-color: #6a11cb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        transition: background-color 0.4s, color 0.4s, transform 0.6s;
+        align-self: flex-start;
+    }
+
+    .btn-custom:hover {
+        background-color: #2575fc;
+        color: black; /* Изменение цвета текста на черный */
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="container">
+    <h1 class="my-4">Административная панель</h1>
+    <div class="admin-links">
+        <div class="admin-link-card">
+            <h5>Администрирование заказов</h5>
+            <p>Просмотр и управление заказами.</p>
+            <a href="{% url 'admin_employee' %}" class="btn btn-custom">Перейти</a>
+        </div>
+        <div class="admin-link-card">
+            <h5>Администрирование услуг</h5>
+            <p>Просмотр и управление услугами.</p>
+            <a href="{% url 'employee_tovar_reg_admin' %}" class="btn btn-custom">Перейти</a>
+        </div>
+        <div class="admin-link-card">
+            <h5>Выполнение услуг</h5>
+            <p>Выполнение услуг заказчика.</p>
+            <a href="{% url 'cart:service_execution_list' %}" class="btn btn-custom">Перейти</a>
+        </div>
+        <div class="admin-link-card">
+            <h5>Выполнение команд</h5>
+            <p>Введите команду для выполнения на сервере.</p>
+            <form method="post" action="{% url 'admin_panel' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="command">Команда:</label>
+                    <input type="text" class="form-control" id="command" name="command" required>
+                </div>
+                <button type="submit" class="btn btn-custom">Выполнить</button>
+            </form>
+            {% if result %}
+                <h5 class="mt-4">Результат выполнения:</h5>
+                <pre>{{ result }}</pre>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
