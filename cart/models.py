@@ -9,8 +9,7 @@ class Order(models.Model):
                                  on_delete=models.CASCADE, verbose_name='Покупатель')
     products = models.ManyToManyField(Product, verbose_name='Товары', blank=True, through='ProductsInOrder')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время создания')
-    all_total_price = models.PositiveIntegerField(default=0, verbose_name='Общая итоговая цена')  # Новое поле
-
+    all_total_price = models.PositiveIntegerField(default=0, verbose_name='Общая итоговая цена')
 
     class Meta:
         verbose_name = 'Заказ'
@@ -22,9 +21,10 @@ class Order(models.Model):
 
 class ProductsInOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Заказ')
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='Товар', related_name='count_in_order',)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='Товар',
+                                related_name='count_in_order', )
     quantity = models.PositiveSmallIntegerField(verbose_name='Количество товара в заказе')
-    total_price = models.PositiveSmallIntegerField(verbose_name='Итоговая цена в заказе') # Добавление нового поля
+    total_price = models.PositiveSmallIntegerField(verbose_name='Итоговая цена в заказе')
 
 
 class ServiceExecution(models.Model):

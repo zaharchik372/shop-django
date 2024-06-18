@@ -1,5 +1,6 @@
 from django.urls import path, include
-
+from django.conf.urls.static import static
+from django.conf import settings
 from account import views
 
 urlpatterns = [
@@ -15,6 +16,6 @@ urlpatterns = [
     path('search/', views.search_products_vulnerable, name='search_service'),
     path('dashboard/', views.user_dashboard, name='user_dashboard'),
     path('zakaz_clienta/<int:order_id>/', views.client_order_detail, name='client_order_detail'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # aasddddmin1@test.ru

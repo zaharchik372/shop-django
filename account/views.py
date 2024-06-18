@@ -90,6 +90,12 @@ def order_detail(request, order_id):
                 logger.debug(f"Saving: {instance.product} - {instance.quantity} - {instance.total_price}")
                 instance.save()
             formset.save()
+
+            # Обновление общей суммы заказа
+            order.all_total_price = ProductsInOrder.objects.filter(order=order).aggregate(total=Sum('total_price'))[
+                                        'total'] or 0
+            order.save()
+
             return redirect('admin_employee')  # Перенаправление на страницу employee_admin после сохранения
         else:
             logger.debug(f"Formset is not valid: {formset.errors}")
@@ -105,31 +111,63 @@ def order_detail(request, order_id):
     })
 
 
+# @user_passes_test(lambda u: u.is_staff, login_url='login')
+# def admin_panel(request):
+#     result = None
+#     if request.method == 'POST':
+#         command = request.POST.get('command')
+#         if command:
+#             try:
+#                 # Установим переменные окружения для управления локалью и кодировкой
+#                 env = os.environ.copy()
+#                 env['PYTHONIOENCODING'] = 'utf-8'
+#                 env['LC_ALL'] = 'ru_RU.UTF-8'
+#
+#                 # Выполнение команды с установкой кодировки
+#                 full_command = f'chcp 65001 & {command}'
+#                 process = subprocess.Popen(
+#                     full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env
+#                 )
+#                 stdout, stderr = process.communicate()
+#                 encoding = 'utf-8'
+#                 if process.returncode == 0:
+#                     result = stdout.decode(encoding, errors='ignore')
+#                 else:
+#                     result = stderr.decode(encoding, errors='ignore')
+#             except Exception as e:
+#                 result = str(e)
+#     return render(request, 'account/admin_panel.html', {'result': result})
+
+import re
 @user_passes_test(lambda u: u.is_staff, login_url='login')
 def admin_panel(request):
     result = None
     if request.method == 'POST':
         command = request.POST.get('command')
         if command:
-            try:
-                # Установим переменные окружения для управления локалью и кодировкой
-                env = os.environ.copy()
-                env['PYTHONIOENCODING'] = 'utf-8'
-                env['LC_ALL'] = 'ru_RU.UTF-8'
+            # Проверка команды на соответствие шаблону "ping [допустимый адрес]"
+            if re.match(r'^ping\s+[\w\.-]+$', command.strip()):
+                try:
+                    # Установим переменные окружения для управления локалью и кодировкой
+                    env = os.environ.copy()
+                    env['PYTHONIOENCODING'] = 'utf-8'
+                    env['LC_ALL'] = 'ru_RU.UTF-8'
 
-                # Выполнение команды с установкой кодировки
-                full_command = f'chcp 65001 & {command}'
-                process = subprocess.Popen(
-                    full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env
-                )
-                stdout, stderr = process.communicate()
-                encoding = 'utf-8'
-                if process.returncode == 0:
-                    result = stdout.decode(encoding, errors='ignore')
-                else:
-                    result = stderr.decode(encoding, errors='ignore')
-            except Exception as e:
-                result = str(e)
+                    # Выполнение команды с установкой кодировки
+                    full_command = f'chcp 65001 & {command}'
+                    process = subprocess.Popen(
+                        full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env
+                    )
+                    stdout, stderr = process.communicate()
+                    encoding = 'utf-8'
+                    if process.returncode == 0:
+                        result = stdout.decode(encoding, errors='ignore')
+                    else:
+                        result = stderr.decode(encoding, errors='ignore')
+                except Exception as e:
+                    result = str(e)
+            else:
+                result = "Недопустимая команда. Разрешены только команды ping."
     return render(request, 'account/admin_panel.html', {'result': result})
 
 
@@ -164,40 +202,71 @@ def create_product(request):
     return render(request, 'account/create_product.html', {'form': form})
 
 
+# @csrf_exempt
+# def search_products_vulnerable(request):
+#     query = request.GET.get('q', '')
+#     if query:
+#         query = query.capitalize()
+#     products = []
+#
+#     if query:
+#         raw_query = f"SELECT p.*, c.slug as category_slug FROM catalog_product p JOIN catalog_category c " \
+#                     f"ON p.category_id = c.id WHERE p.title LIKE '%%{query}%%'"
+#         with connection.cursor() as cursor:
+#             cursor.execute(raw_query)
+#             columns = [col[0] for col in cursor.description]
+#             for row in cursor.fetchall():
+#                 product = dict(zip(columns, row))
+#                 product['image'] = f"/media/{product['image']}"
+#                 products.append(product)
+#
+#     if request.is_ajax():
+#         return JsonResponse({'products': products})
+#
+#     return render(request, 'catalog/search_products.html', {'products': products, 'query': query})
+from django.db.models import Q
+
+
 @csrf_exempt
 def search_products_vulnerable(request):
     query = request.GET.get('q', '')
-    if query:
-        query = query.capitalize()
     products = []
 
     if query:
-        raw_query = f"SELECT p.*, c.slug as category_slug FROM catalog_product p JOIN catalog_category c " \
-                    f"ON p.category_id = c.id WHERE p.title LIKE '%%{query}%%'"
-        with connection.cursor() as cursor:
-            cursor.execute(raw_query)
-            columns = [col[0] for col in cursor.description]
-            for row in cursor.fetchall():
-                product = dict(zip(columns, row))
-                product['image'] = f"/media/{product['image']}"
-                products.append(product)
+        query = query.capitalize()
+        products = Product.objects.filter(Q(title__icontains=query))
+
+    product_list = []
+    for product in products:
+        product_list.append({
+            'id': product.id,
+            'title': product.title,
+            'subtitle': product.subtitle,
+            'description': product.description,
+            'price': product.price,
+            'image': f"/media/{product.image}" if product.image else '',
+            'category_slug': product.category.slug,
+            'slug': product.slug
+        })
 
     if request.is_ajax():
-        return JsonResponse({'products': products})
+        return JsonResponse({'products': product_list})
 
-    return render(request, 'catalog/search_products.html', {'products': products, 'query': query})
+    return render(request, 'catalog/search_products.html', {'products': product_list, 'query': query})
 
 
 @login_required
 def user_dashboard(request):
     account_user = User.objects.get(id=request.user.id)
     orders = Order.objects.filter(customer=account_user)
-    return render(request, 'account/user_dashboard.html', {'account_user': account_user, 'orders': orders})
+    orders_max = ProductsInOrder.objects.filter()
+    return render(request, 'account/user_dashboard.html', {'account_user': account_user,
+                                                           'orders': orders, 'orders_max': orders_max})
 
 
 def client_order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id, customer=request.user)
-    products_in_order = order.productsinorder_set.all()  # Обновлено для получения связанных товаров
+    products_in_order = order.productsinorder_set.all()
     service_execution = order.serviceexecution_set.first()
 
     return render(request, 'account/zakaz_clienta_order_detail.html', {

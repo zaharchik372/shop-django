@@ -1,5 +1,6 @@
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 from cart import views
 from cart.views import service_execution_list, edit_service_execution
 
@@ -12,5 +13,4 @@ urlpatterns = [
     path('service-executions/', service_execution_list, name='service_execution_list'),
     path('service-executions/edit/<int:pk>/', edit_service_execution, name='edit_service_execution'),
     path('service-executions/create/', views.create_service_execution, name='create_service_execution'),
-
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

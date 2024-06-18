@@ -4,7 +4,6 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 
 class Category(MPTTModel):
-
     name = models.CharField(
         max_length=255,
         verbose_name='Категория',
@@ -54,7 +53,7 @@ class Product(models.Model):
         max_length=255,
         verbose_name='Подзаголовок',
         blank=True,  # Сделаем поле необязательным
-        null=True   # Разрешим хранить в базе данных значения NULL
+        null=True  # Разрешим хранить в базе данных значения NULL
     )
     description = models.TextField(verbose_name='Описание')
     image = models.ImageField(
@@ -63,6 +62,7 @@ class Product(models.Model):
     )
     price = models.IntegerField(verbose_name='Цена товара')
     slug = models.SlugField(unique=True)
+
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
@@ -81,7 +81,6 @@ class Product(models.Model):
 
 
 class Review(models.Model):
-
     product = models.ForeignKey(
         Product,
         related_name='reviews',

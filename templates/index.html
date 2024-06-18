@@ -7,7 +7,6 @@
 {% block content %}
 
 <style>
-
     .container {
         max-width: 1100px; /* Ширина контейнера */
         margin: 0 auto; /* Центрирование контейнера */
@@ -100,8 +99,39 @@
     .price-tag:hover {
         background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%);
     }
-</style>
 
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .toast {
+        background: linear-gradient(45deg, #5930a1 0%, #5930a1 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+
+    .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .toast-error {
+        background: linear-gradient(45deg, #dc3545 0%, #c82333 100%);
+    }
+</style>
 
 <main role="main" class="pt-5">
     {% for article in articles %}
@@ -140,6 +170,9 @@
     {% endfor %}
 </main>
 
+
+<div class="toast-container" id="toast-container"></div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const forms = document.querySelectorAll('form[id^="add-to-cart-form-"]');
@@ -157,9 +190,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: formData
             })
+            .then(response => {
+                if (response.ok) {
+                    showToast('Товар добавлен в корзину!', 'success');
+                } else {
+                    showToast('Не удалось добавить товар в корзину.', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Произошла ошибка при добавлении товара в корзину.', 'error');
+            });
         });
     });
 });
+
+function showToast(message, type) {
+    const toastContainer = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast show ' + (type === 'success' ? 'toast-success' : 'toast-error');
+    toast.innerText = message;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 500);
+    }, 2000);
+}
 </script>
 
 {% endblock %}

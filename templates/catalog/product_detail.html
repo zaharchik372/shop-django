@@ -15,18 +15,18 @@
     .product-image {
         flex: 1;
         text-align: center;
-        max-width: 100%; /* Ширина блока с изображением */
+        max-width: 100%;
     }
 
     .product-image img {
-        max-width: 100%;  /* Делаем изображение растягивающимся на всю ширину блока */
-        height: 300px; /* Фиксируем высоту изображения */
-        object-fit: cover; /* Обеспечиваем заполнение блока изображением без потери пропорций */
+        max-width: 100%;
+        height: 300px;
+        object-fit: cover;
     }
 
     .product-details {
         flex: 1;
-        padding-left: 20px; /* Добавляем отступ между изображением и деталями */
+        padding-left: 20px;
     }
 
     .btn-custom {
@@ -34,21 +34,20 @@
         border-color: #6a11cb;
         color: white;
         transition: background-color 0.4s ease-in-out, transform 0.6s ease-in-out;
-        width: 200px; /* Изначально автоматическая ширина, но можно задать через класс или стиль */
+        width: 200px;
         height: auto;
         display: inline-block;
-        /* Удаление margin для автоматического выравнивания по умолчанию */
         margin-left: auto;
         margin-right: auto;
     }
 
     .btn-custom.align-left {
-        margin-left: 0; /* Устанавливает кнопку влево */
+        margin-left: 0;
         margin-right: auto;
     }
 
     .btn-custom.align-right {
-        margin-right: 0; /* Устанавливает кнопку вправо */
+        margin-right: 0;
         margin-left: auto;
     }
 
@@ -58,7 +57,7 @@
         transform: translateY(-2px);
     }
 
-        .review-box {
+    .review-box {
         border: 1px solid #ddd;
         padding: 15px;
         border-radius: 10px;
@@ -67,36 +66,36 @@
     }
 
     .review-rating {
-        color: #ffc107; /* Золотой цвет для звезд */
+        color: #ffc107;
     }
-.price-tag {
-    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 1.25rem;
-    font-weight: bold;
-    transition: background-color 0.6s ease-in-out;
-    width: 200px; /* Изначально автоматическая ширина, но можно задать через класс или стиль */
-    height: auto; /* Изначально автоматическая высота, но можно задать через класс или стиль */
-    display: inline-block; /* Для поддержки ширины и высоты */
-}
 
-.price-tag:hover {
-    background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%);
-}
+    .price-tag {
+        background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 1.25rem;
+        font-weight: bold;
+        transition: background-color 0.6s ease-in-out;
+        width: 200px;
+        height: auto;
+        display: inline-block;
+    }
 
+    .price-tag:hover {
+        background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%);
+    }
 </style>
 
 <div class="container mt-3">
     <div class="row product-display">
         <div class="col-md-6 product-image">
-            <img src="{{ product.image.url }}" alt="{{ product.title }}" style="width: 100%; height: auto;">
+            <img src="{{ product.image.url }}" alt="{{ product.title }}">
         </div>
         <div class="col-md-6 product-details">
             <h2>{{ product.title }}</h2>
             <p>{{ product.description }}</p>
-            <p class="price-tag">  {{ product.price|intcomma }} руб./куб</p>
+            <p class="price-tag">{{ product.price|intcomma }} руб./куб</p>
             <form action="{% url 'cart:add_to_cart' %}?product_id={{ product.id }}&next={{ request.path }}" method="post">
                 {% csrf_token %}
                 <input type="submit" class="btn btn-custom" value="Добавить в корзину »">
@@ -108,8 +107,8 @@
     {% for review in product.reviews.all %}
         <div class="review-box">
             <p class="review-rating">{{ review.rating|view_rating }}</p>
-            <strong>{{ review.name }}</strong>
-            <p>{{ review.review|safe }}</p>
+            <strong>{{ review.name|escape }}</strong>
+            <p>{{ review.review|escape }}</p>
         </div>
     {% endfor %}
     <div class="row">

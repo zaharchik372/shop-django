@@ -5,7 +5,6 @@ from .models import Review
 
 
 class ReviewForm(forms.ModelForm):
-
     class Meta:
         model = Review
         fields = ('name', 'rating', 'review')
@@ -16,12 +15,12 @@ class ReviewForm(forms.ModelForm):
                     'class': 'form-control',
                     'id': 'name',
                     'aria-describedby': 'nameHelp',
-                    'placeholder': 'Представтесь',
+                    'placeholder': 'Представьтесь',
                     'name': 'name',
                     'data-cip-id': 'name'
                 }
             ),
-            'rating': RadioSelect(
+            'rating': forms.RadioSelect(
                 choices=[
                     (1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')
                 ]
@@ -34,6 +33,12 @@ class ReviewForm(forms.ModelForm):
                     'name': 'description'
                 }
             ),
-
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user and user.is_authenticated:
+            self.fields['name'].initial = f"{user.first_name} {user.last_name}"
+            self.fields['name'].widget.attrs['readonly'] = True
 

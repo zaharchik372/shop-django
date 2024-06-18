@@ -32,20 +32,24 @@ class ProductDetail(DetailView):
     context_object_name = 'product'
 
     def get_context_data(self, **kwargs):
-        context = super(ProductDetail, self).get_context_data()
-        context['form'] = ReviewForm
+        context = super(ProductDetail, self).get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            initial_data = {
+                'name': f"{self.request.user.first_name}",
+            }
+            context['form'] = ReviewForm(initial=initial_data, user=self.request.user)
+        else:
+            context['form'] = ReviewForm()
         return context
 
     def post(self, request, *args, **kwargs):
-        form = ReviewForm(request.POST, request.FILES)
-        self.object = super(ProductDetail, self).get_object()
-        context = super(ProductDetail, self).get_context_data()
-        context['form'] = ReviewForm
+        form = ReviewForm(request.POST, request.FILES, user=request.user)
+        self.object = self.get_object()
+        context = self.get_context_data()
         if form.is_valid():
             new_review = form.save(commit=False)
             new_review.product = self.object
             new_review.save()
-
         else:
             context['form'] = form
 
